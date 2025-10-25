@@ -13,75 +13,19 @@
         padding: 20px;
         direction: rtl;
         min-height: 100vh;
-        font-size: 22px; /* تكبير الخط */
     }
-    h1 { 
-        margin-bottom: 25px; 
-        font-size: 48px; /* تكبير عنوان الصفحة */
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.3); 
-    }
-    #location { 
-        margin-bottom: 25px; 
-        font-weight: bold; 
-        font-size: 26px; /* تكبير الموقع */
-        color: #f0f0f0; 
-    }
-    #cityInput input { 
-        padding: 15px; 
-        font-size: 20px; 
-        border: none; 
-        border-radius: 5px; 
-        width: 250px; 
-        outline: none; 
-    }
-    #cityInput button { 
-        padding: 15px 20px; 
-        font-size: 20px; 
-        border: none; 
-        border-radius: 5px; 
-        margin-left: 10px; 
-        background-color: #ffbe76; 
-        color: #333; 
-        cursor: pointer; 
-        transition: 0.3s; 
-    }
+    h1 { margin-bottom: 15px; font-size: 36px; text-shadow: 1px 1px 4px rgba(0,0,0,0.3); }
+    #location { margin-bottom: 20px; font-weight: bold; font-size: 18px; color: #f0f0f0; }
+    #cityInput input { padding: 10px; font-size: 16px; border: none; border-radius: 5px; width: 200px; outline: none; }
+    #cityInput button { padding: 10px 15px; font-size: 16px; border: none; border-radius: 5px; margin-left: 5px; background-color: #ffbe76; color: #333; cursor: pointer; transition: 0.3s; }
     #cityInput button:hover { background-color: #fab1a0; }
-    #nextPrayer { 
-        font-size: 28px; 
-        margin: 25px auto; 
-        padding: 20px; 
-        background-color: rgba(255,255,255,0.2); 
-        border-radius: 10px; 
-        width: 90%; 
-        max-width: 600px; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-    }
-    table { 
-        margin: 0 auto; 
-        border-collapse: separate; 
-        border-spacing: 0 15px; 
-        width: 95%; /* تقريبًا يغطي الصفحة */
-        max-width: 700px; 
-        font-size: 24px; /* تكبير الخط داخل الجدول */
-    }
-    tr { 
-        background-color: rgba(255,255,255,0.15); 
-        border-radius: 10px; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-        transition: 0.3s; 
-    }
+    #nextPrayer { font-size: 20px; margin: 20px auto; padding: 12px; background-color: rgba(255,255,255,0.2); border-radius: 10px; width: fit-content; min-width: 250px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    table { margin: 0 auto; border-collapse: separate; border-spacing: 0 10px; width: 90%; max-width: 400px; }
+    tr { background-color: rgba(255,255,255,0.15); border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s; }
     tr:hover { background-color: rgba(255,255,255,0.25); }
-    td:first-child { font-weight: bold; padding-left: 15px; }
-    td:last-child { text-align: left; padding-right: 15px; }
-    footer { 
-        margin-top: 40px; 
-        font-size: 22px; 
-        color: #fff; 
-        background-color: rgba(0,0,0,0.2); 
-        padding: 15px 0; 
-        border-radius: 8px; 
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2); 
-    }
+    td:first-child { font-weight: bold; padding-left: 10px; }
+    td:last-child { text-align: left; padding-right: 10px; }
+    footer { margin-top: 30px; font-size: 16px; color: #fff; background-color: rgba(0,0,0,0.2); padding: 10px 0; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
 </style>
 </head>
 <body>
@@ -181,7 +125,7 @@ function updateNextPrayer() {
         nextPrayerTime = new Date();
         nextPrayerTime.setDate(nextPrayerTime.getDate()+1);
         nextPrayerTime.setHours(h,m,0,0);
-        nextPrayerName = 'Fajr';
+        nextPrayerName = 'الفجر';
     }
 
     const diff = nextPrayerTime - now;
