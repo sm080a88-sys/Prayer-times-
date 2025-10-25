@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مواقيت الصلاة</title>
+<style>
+    body {
+        font-family: "Tajawal", sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+        direction: rtl;
+        min-height: 100vh;
+        font-size: 22px; /* تكبير الخط */
+    }
+    h1 { 
+        margin-bottom: 25px; 
+        font-size: 48px; /* تكبير عنوان الصفحة */
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3); 
+    }
+    #location { 
+        margin-bottom: 25px; 
+        font-weight: bold; 
+        font-size: 26px; /* تكبير الموقع */
+        color: #f0f0f0; 
+    }
+    #cityInput input { 
+        padding: 15px; 
+        font-size: 20px; 
+        border: none; 
+        border-radius: 5px; 
+        width: 250px; 
+        outline: none; 
+    }
+    #cityInput button { 
+        padding: 15px 20px; 
+        font-size: 20px; 
+        border: none; 
+        border-radius: 5px; 
+        margin-left: 10px; 
+        background-color: #ffbe76; 
+        color: #333; 
+        cursor: pointer; 
+        transition: 0.3s; 
+    }
+    #cityInput button:hover { background-color: #fab1a0; }
+    #nextPrayer { 
+        font-size: 28px; 
+        margin: 25px auto; 
+        padding: 20px; 
+        background-color: rgba(255,255,255,0.2); 
+        border-radius: 10px; 
+        width: 90%; 
+        max-width: 600px; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+    }
+    table { 
+        margin: 0 auto; 
+        border-collapse: separate; 
+        border-spacing: 0 15px; 
+        width: 95%; /* تقريبًا يغطي الصفحة */
+        max-width: 700px; 
+        font-size: 24px; /* تكبير الخط داخل الجدول */
+    }
+    tr { 
+        background-color: rgba(255,255,255,0.15); 
+        border-radius: 10px; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+        transition: 0.3s; 
+    }
+    tr:hover { background-color: rgba(255,255,255,0.25); }
+    td:first-child { font-weight: bold; padding-left: 15px; }
+    td:last-child { text-align: left; padding-right: 15px; }
+    footer { 
+        margin-top: 40px; 
+        font-size: 22px; 
+        color: #fff; 
+        background-color: rgba(0,0,0,0.2); 
+        padding: 15px 0; 
+        border-radius: 8px; 
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2); 
+    }
+</style>
+</head>
+<body>
+
+<h1>🕌 مواقيت الصلاة</h1>
+<p id="location">جاري تحديد موقعك...</p>
+
+<div id="cityInput">
+    <input type="text" id="city" placeholder="ادخل مدينتك">
+    <button onclick="getPrayerByCity()">احصل على مواقيت الصلاة</button>
+</div>
+
+<div id="nextPrayer">جارٍ حساب الصلاة القادمة...</div>
+
+<table>
+    <tr><td>الفجر</td><td id="fajr"></td></tr>
+    <tr><td>الشروق</td><td id="sunrise"></td></tr>
+    <tr><td>الظهر</td><td id="dhuhr"></td></tr>
+    <tr><td>العصر</td><td id="asr"></td></tr>
+    <tr><td>المغرب</td><td id="maghrib"></td></tr>
+    <tr><td>العشاء</td><td id="isha"></td></tr>
+</table>
+
+<footer>دعاء لصانع الموقع: صلاح نصير 💖</footer>
+
+<script>
+let prayerTimes = {};
+
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(fetchPrayerTimes, showError);
+} else {
+    document.getElementById('location').textContent = "المتصفح لا يدعم تحديد الموقع";
+}
+
+function fetchPrayerTimes(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=5`)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('location').textContent = `الموقع: ${data.data.meta.timezone}`;
+        prayerTimes = data.data.timings;
+        updatePrayerTable();
+        startCountdown();
+    })
+    .catch(err => document.getElementById('location').textContent = "حدث خطأ في جلب مواقيت الصلاة");
+}
+
+function getPrayerByCity() {
+    const city = document.getElementById('city').value;
+    if(!city) return alert("ادخل المدينة");
+    fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Egypt&method=5`)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('location').textContent = `الموقع: ${city}`;
+        prayerTimes = data.data.timings;
+        updatePrayerTable();
+        startCountdown();
+    })
+    .catch(err => alert("حدث خطأ في جلب مواقيت الصلاة"));
+}
+
+function updatePrayerTable() {
+    document.getElementById('fajr').textContent = prayerTimes.Fajr;
+    document.getElementById('sunrise').textContent = prayerTimes.Sunrise;
+    document.getElementById('dhuhr').textContent = prayerTimes.Dhuhr;
+    document.getElementById('asr').textContent = prayerTimes.Asr;
+    document.getElementById('maghrib').textContent = prayerTimes.Maghrib;
+    document.getElementById('isha').textContent = prayerTimes.Isha;
+}
+
+function startCountdown() {
+    setInterval(updateNextPrayer, 1000);
+}
+
+function updateNextPrayer() {
+    const now = new Date();
+    const prayers = ['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+    const arabicNames = { Fajr:'الفجر', Dhuhr:'الظهر', Asr:'العصر', Maghrib:'المغرب', Isha:'العشاء' };
+
+    let nextPrayerName = '';
+    let nextPrayerTime = null;
+
+    for(let p of prayers){
+        const [h,m] = prayerTimes[p].split(':').map(Number);
+        const prayerDate = new Date();
+        prayerDate.setHours(h,m,0,0);
+        if(prayerDate > now){
+            nextPrayerName = p;
+            nextPrayerTime = prayerDate;
+            break;
+        }
+    }
+
+    if(!nextPrayerTime){
+        const [h,m] = prayerTimes['Fajr'].split(':').map(Number);
+        nextPrayerTime = new Date();
+        nextPrayerTime.setDate(nextPrayerTime.getDate()+1);
+        nextPrayerTime.setHours(h,m,0,0);
+        nextPrayerName = 'Fajr';
+    }
+
+    const diff = nextPrayerTime - now;
+    const hours = Math.floor(diff/1000/3600);
+    const minutes = Math.floor((diff/1000%3600)/60);
+    const seconds = Math.floor(diff/1000%60);
+
+    document.getElementById('nextPrayer').textContent = 
+        `الصلاة القادمة: ${arabicNames[nextPrayerName] || nextPrayerName} بعد ${hours} : ${minutes.toString().padStart(2,'0')} : ${seconds.toString().padStart(2,'0')}`;
+}
+function showError(){document.getElementById('location').textContent="تم رفض الوصول للموقع، يمكنك إدخال مدينتك يدويًا";}
+</script>
+
+</body>
+</html>
